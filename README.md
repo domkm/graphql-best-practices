@@ -108,7 +108,9 @@ Authentication can be done via mutations (like `authenticateUser`) or externally
 <!-- omit in toc -->
 #### Cases
 
-Type names should `PascalCase`, field and argument names should be `camelCase`, and enum values should be `SCREAMING_SNAKE_CASE`.
+- Type names should `PascalCase`
+- Field and argument names should be `camelCase`
+- Enum values should be `SCREAMING_SNAKE_CASE`.
 
 <!-- omit in toc -->
 #### Types
