@@ -21,7 +21,6 @@ This guide assumes knowledge of the GraphQL spec. This document is about the art
   - [Headers](#headers)
   - [Status Codes](#status-codes)
   - [Authentication](#authentication)
-  - [Authorization](#authorization)
 - [Schema](#schema)
   - [Names](#names)
   - [Documentation](#documentation)
@@ -39,6 +38,7 @@ This guide assumes knowledge of the GraphQL spec. This document is about the art
   - [Files](#files)
 - [Server](#server)
   - [Schema Creation](#schema-creation)
+  - [Authorization](#authorization)
   - [Deprecation](#deprecation)
 - [Client](#client)
   - [Deprecation](#deprecation-1)
@@ -82,7 +82,7 @@ query Query2 {
 
 ### Headers
 
-Headers should be used for all information that is expected to be available in all resolvers. For example, a token to authenticate the current user might be sent in the `Authorization` header or the current user's language preference might be sent in the `Accept-Language` header. These are not specific to any field and should therefore be sent via headers. Do *not* try to do something like this:
+Headers should be used for all information that is expected to be available in all resolvers. For example, a token to authenticate the current user might be sent in the `Authorization` header or the current user's language preference might be sent in the `Accept-Language` header. These are not specific to any field and should therefore be sent via headers. Do _not_ try to do something like this:
 
 ```graphql
 query {
@@ -91,20 +91,15 @@ query {
   }
 }
 ```
+This leads to very complicated queries and context-dependent resolvers.
 
 ### Status Codes
 
-Servers should always send 200 status codes. Errors should be conveyed in response `errors` array and in operation `data`. This is addressed well in [Sasha Solomon's "200OK! Error Handling in GraphQL"](https://medium.com/@sachee/200-ok-error-handling-in-graphql-7ec869aec9bc).
+Servers should always send 200 status codes. Errors should be conveyed in response `errors` array.
 
 ### Authentication
 
 Authentication can be done via mutations (like `authenticateUser`) or externally (directly through REST calls or via a provider like Auth0). Cookie-based authentication is fine, though JWTs are far more common. Either way, use headers to send tokens; do not put those in GraphQL requests.
-
-### Authorization
-
-Do not rely on parent resolvers for authorization except in scalar resolvers.
-
-In other words, object resolvers should not assume that a parent resolver ran first. Doing so makes the schema brittle since it prevents easy addition of fields that return objects for fear that those object resolvers cannot handle multiple schema locations.
 
 ## Schema
 
@@ -438,6 +433,44 @@ In the spirit of being client-driven, the GraphQL Multipart Request Spec seems l
 ### Schema Creation
 
 SDL (the GraphQL **S**chema **D**efinition **L**anguage) is used throughout this document. It is very useful for describing a schema but too static for easily defining a schema. Do not use SDL or any type of static data (like EDN) for schema definition. Instead, use code to generate the schema (or generate the data which is then used to generate the schema). Good GraphQL schemas tend to be extremely verbose; do not try to define them by hand. See [this article](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3) for a more thorough explanation.
+
+### Authorization
+
+Do not rely on parent resolvers for authorization except in scalar resolvers. In other words, object resolvers should not assume that a parent resolver ran first. Doing so makes the schema brittle since it prevents easy addition of fields that return objects for fear that those object resolvers cannot handle multiple schema locations.
+
+Consider the following schema:
+
+```graphql
+type Query {
+  viewer: Viewer
+}
+
+type Viewer {
+  projects: [Project!]
+}
+
+type Project {
+  name: String
+  # ...
+}
+```
+
+In this schema, the `Project` resolvers can safely assume that the viewer is authorized to access the specific project because `Project` resolvers can only run after the `Viewer.projects` resolver runs. However, consider what happens if we add Relay global object identification:
+
+```graphql
+interface Node {
+  id: ID!
+}
+
+extend type Query {
+  node(id: ID!): Node
+}
+
+extend type Project implements Node {
+  id: ID!
+}
+```
+Now, `Query.node` code return a `Project` and any other field that returns `Node` could return `Project`. The assumption that `Viewer.projects` can authorize access prior to `Project` resolvers is no longer true.
 
 ### Deprecation
 
