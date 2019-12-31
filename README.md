@@ -87,7 +87,7 @@ query Query2 {
 
 ### Headers
 
-Headers should be used for all information that is expected to be available in all resolvers. For example, a token to authenticate the current user might be sent in the `Authorization` header or the current user's language preference might be sent in the `Accept-Language` header. These are not specific to any field and should therefore be sent via headers. Do _not_ try to do something like this:
+Headers should be used for all information that is expected to be available in all resolvers. For example, a token to authenticate the current user might be sent in the `Authorization` header or the current user's language preference might be sent in the `Accept-Language` header. These are not specific to any field and should, therefore, be sent via headers. Do _not_ try to do something like this:
 
 ```graphql
 query {
@@ -203,7 +203,7 @@ type Email {
 
 Unions are semantically just marker interfaces (interfaces with zero fields) so I will refer to both interfaces and unions as interfaces.
 
-When choosing field types, prefer interfaces instead concrete types.
+When choosing field types, prefer interfaces instead of concrete types.
 
 Instead of a `Comment` type, consider a `Comment` interface and a `PostComment` type. Instead of a `Message` type, consider a `Message` interface and a `ChatMessage` type.
 
@@ -274,7 +274,7 @@ Circumstances change. What one day is assumed to always be the case may prove to
 <!-- omit in toc -->
 #### Output
 
-Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, at some point in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for front-end developers but provides long-term flexibility.
+Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for front-end developers but provides long-term flexibility.
 
 <!-- omit in toc -->
 #### Input
@@ -393,7 +393,7 @@ interface MutationPayload {
 }
 ```
 
-Mutation payloads should always return the root query object so that clients are able to query from the root, regardless of what the mutation response is otherwise. This can be useful for a variety of reasons, but the primary reason is that full-featured clients like Relay and Apollo need to incorporate the mutation changes into the state but do not know how to by default because the effects of the mutation are not known ahead of time. Clients can use the Query root to query for changed data which should replace stale local data.
+Mutation payloads should always return the root query object so that clients can query from the root, regardless of what the mutation response is otherwise. This can be useful for a variety of reasons, but the primary reason is that full-featured clients like Relay and Apollo need to incorporate the mutation changes into the state but do not know how to by default because the effects of the mutation are not known ahead of time. Clients can use the Query root to query for changed data which should replace stale local data.
 
 Additionally, Mutation payloads should return a `result` union. Please read [this article about result unions](https://medium.com/@sachee/200-ok-error-handling-in-graphql-7ec869aec9bc). Unfortunately, GraphQL's type system cannot express that `MutationPayload` must have a field called `result` and the value must be non-scalar, so we will leave that commented out.
 
@@ -406,7 +406,7 @@ GraphQL does not specify how to handle files.
 
 The easy side of files first -- downloads.
 
-Return signed URLs that expire after a reasonable period of time.
+Return signed URLs that expire after a reasonable period.
 These URLs should be wrapped in an object that provides additional metadata, like this:
 
 ```graphql
@@ -477,7 +477,7 @@ extend type Project implements Node {
   id: ID!
 }
 ```
-Now, `Query.node` code return a `Project` and any other field that returns `Node` could return `Project`. The assumption that `Viewer.projects` can authorize access prior to `Project` resolvers is no longer true.
+Now, `Query.node` code returns a `Project` and any other field that returns `Node` could return `Project`. The assumption that `Viewer.projects` can authorize access before `Project` resolvers is no longer true.
 
 ### Deprecation
 
