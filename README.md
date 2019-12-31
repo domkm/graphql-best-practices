@@ -119,7 +119,7 @@ Name the root types `Query`, `Mutation`, and `Subscription`.
 
 Name the current user type `Viewer` or `Me`.
 
-Name mutation inputs and returns and `[NameOfMutation]Input` and `[NameOfMutation]Payload` respectively.
+Name mutation input objects and output objects `[NameOfMutation]Input` and `[NameOfMutation]Payload` respectively.
 
 <!-- omit in toc -->
 #### List Fields
