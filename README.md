@@ -14,8 +14,6 @@ It may also help to read the official [GraphQL Best Practices](https://graphql.o
 
 This guide assumes knowledge of the GraphQL spec. This document is about the art of using GraphQL effectively. As such, virtually everything here is subjective.
 
-- [Assumptions](#assumptions)
-- [Definitions](#definitions)
 - [The Basics](#the-basics)
   - [JSON](#json)
   - [Headers](#headers)
@@ -48,11 +46,6 @@ This guide assumes knowledge of the GraphQL spec. This document is about the art
   - [Local State Management](#local-state-management)
 - [Optimization](#optimization)
   - [Persisted and Whitelisted Queries](#persisted-and-whitelisted-queries)
-
-## Assumptions
-
-## Definitions
-
 
 ## The Basics
 
