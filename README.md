@@ -191,7 +191,7 @@ This extends to scalars as well. An email could be represented as a string, or a
 type Email {
   address: EmailAddress!
   isVerified: Boolean!
-  verifiedAt: ISO8601DateTime!
+  verifiedAt: ISO8601DateTime
 }
 ```
 ### Interfaces and Unions
