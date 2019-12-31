@@ -1,4 +1,3 @@
-<!-- omit in toc -->
 # GraphQL Best Practices
 
 This document makes the following assumptions. If these assumptions are not true for your use-case then these recommendations may not apply.
@@ -103,14 +102,12 @@ Authentication can be done via mutations (like `authenticateUser`) or externally
 
 ### Names
 
-<!-- omit in toc -->
 #### Cases
 
 - Type names should `PascalCase`
 - Field and argument names should be `camelCase`
 - Enum values should be `SCREAMING_SNAKE_CASE`.
 
-<!-- omit in toc -->
 #### Types
 
 Name the root types `Query`, `Mutation`, and `Subscription`.
@@ -119,7 +116,6 @@ Name the current user type `Viewer` or `Me`.
 
 Name mutation input objects and output objects `[NameOfMutation]Input` and `[NameOfMutation]Payload` respectively.
 
-<!-- omit in toc -->
 #### List Fields
 
 Fields that return lists or collection wrappers (like Relay connections) should be plural.
@@ -264,12 +260,10 @@ Fields are essentially named-parameter functions. Even though they can take any 
 
 Circumstances change. What one day is assumed to always be the case may prove to not be.
 
-<!-- omit in toc -->
 #### Output
 
 Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for front-end developers but provides long-term flexibility.
 
-<!-- omit in toc -->
 #### Input
 
 Bias toward __non__-nullable input fields and arguments. A non-nullable field which was technically optionally can become required without breaking clients. However, a nullable field cannot become non-nullable without breaking clients. Try to have every input field and argument be non-nullable.
@@ -299,7 +293,6 @@ There is no limit to the number of fields and resolvers your schema has. The onl
 
 Mutations are the most difficult part of GraphQL schema design.
 
-<!-- omit in toc -->
 #### RPC, not CRUD
 
 This is the key concept. Mutations should be small and generally directly linked to an action the user is taking.
@@ -307,7 +300,6 @@ This is the key concept. Mutations should be small and generally directly linked
 - No: `updateUser(userInput)`, `userUpdate(userInput)`
 - Yes: `setUserEmail(emailInput)`, `casUserEmail(currentAndNewEmailInput)`
 
-<!-- omit in toc -->
 #### Input
 
 All mutations should take exactly one input argument which should be a non-null input object that is specific to that mutation and named as such.
@@ -366,7 +358,6 @@ This makes it impossible to represent obviously incorrect inputs.
 
 This would be easier if GraphQL had input unions, which might be added in the future.
 
-<!-- omit in toc -->
 #### Output
 
 All mutations should return a payload output object that is specific to that mutation and named as such.
@@ -394,7 +385,6 @@ Additionally, Mutation payloads should return a `result` union. Please read [thi
 
 GraphQL does not specify how to handle files.
 
-<!-- omit in toc -->
 #### Download
 
 The easy side of files first -- downloads.
@@ -414,7 +404,6 @@ type Asset {
 
 This is a simplified example. It would be better to make `Asset` an interface and then have concrete types like `ImageAsset` and `VideoAsset` that add additional fields like `width`/`height` and `length`.
 
-<!-- omit in toc -->
 #### Upload
 
 There seem to be three general strategies for handling file uploads. At the time of writing, I have experience with the first two only.
@@ -500,7 +489,6 @@ Correctly handle the types that the schema exposes. In GraphQL, a breaking schem
 
 There are two common ways in which the schema can, but should now, be ignored or misused.
 
-<!-- omit in toc -->
 #### Nullability
 
 If a field is nullable, the client _must_ handle that case, even if values in development are never `null`.
@@ -509,7 +497,6 @@ If you use a statically typed language, like TypeScript, generate language types
 
 Complying with the schema is more difficult in dynamically typed languages but best effort should be made. In ClojureScript, [Serene](https://github.com/paren-com/serene) can be used to generate `clojure.spec` specs for the schema and then use those with `test.check` to test UI components.
 
-<!-- omit in toc -->
 #### Additions
 
 Adding enum values to existing enum types, adding implementing object types to existing interfaces, and adding object types to existing union types should not be breaking changes. However, they can be breaking changes if the client assumes that these are closed sets. Clients must always assume that the values/members of enums, interfaces, and unions are open sets and have fallback functionality to handle unknown cases.
