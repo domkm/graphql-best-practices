@@ -198,9 +198,9 @@ type Email {
 
 Unions are semantically just marker interfaces (interfaces with zero fields) so I will refer to both interfaces and unions as interfaces.
 
-When choosing field types, bias toward using interface instead concrete types.
+When choosing field types, bias toward choosing interfaces instead concrete types.
 
-Instead of a `Comment` type, consider a `PostComment` type that implements a `Comment` interface. Instead of a `Message` type, consider a `ChatMessage` type that implements a `Message` interface.
+Instead of a `Comment` type, consider a `Comment` interface and a `PostComment` type. Instead of a `Message` type, consider a `Message` interface and a `ChatMessage` type.
 
 ### References
 
