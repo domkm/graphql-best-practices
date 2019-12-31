@@ -163,9 +163,9 @@ Bad examples:
 
 ### Field Names and Types
 
-Bias toward very specific field names or nested object types.
+Prefer very specific field names or nested object types.
 
-Use very specific names, especially while the domain is not yet well-understood. This allows the use of more general names when the domain is more understood. Typically, general names are best reserved for interfaces and unions.
+Use very descriptive and specific names, especially while the domain is not yet well-understood. This allows the use of more general names when the domain is more understood. Typically, general names are best reserved for interfaces and unions.
 
 Alternatively, if specific names do not work or are unwieldy, nest types instead. For example, the following two schemas are roughly the same in terms of flexibility.
 
@@ -198,7 +198,7 @@ type Email {
 
 Unions are semantically just marker interfaces (interfaces with zero fields) so I will refer to both interfaces and unions as interfaces.
 
-When choosing field types, bias toward choosing interfaces instead concrete types.
+When choosing field types, prefer interfaces instead concrete types.
 
 Instead of a `Comment` type, consider a `Comment` interface and a `PostComment` type. Instead of a `Message` type, consider a `Message` interface and a `ChatMessage` type.
 
@@ -269,7 +269,7 @@ Circumstances change. What one day is assumed to always be the case may prove to
 <!-- omit in toc -->
 #### Output
 
-Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, at some point in the future, be null. Bias toward having nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for client developers but provides long-term flexibility.
+Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, at some point in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for client developers but provides long-term flexibility.
 
 <!-- omit in toc -->
 #### Input
