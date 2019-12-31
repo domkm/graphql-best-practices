@@ -3,8 +3,6 @@
 
 This document makes the following assumptions. If these assumptions are not true for your use-case then these recommendations may not apply.
 
-Assumptions:
-
 - The protocol is HTTP and/or WebSocket
 - The data format is JSON
 - Your clients are GUIs
@@ -16,6 +14,8 @@ It may also help to read the official [GraphQL Best Practices](https://graphql.o
 
 This guide assumes knowledge of the GraphQL spec. This document is about the art of using GraphQL effectively. As such, virtually everything here is subjective.
 
+- [Assumptions](#assumptions)
+- [Definitions](#definitions)
 - [The Basics](#the-basics)
   - [JSON](#json)
   - [Headers](#headers)
@@ -48,6 +48,11 @@ This guide assumes knowledge of the GraphQL spec. This document is about the art
   - [Local State Management](#local-state-management)
 - [Optimization](#optimization)
   - [Persisted and Whitelisted Queries](#persisted-and-whitelisted-queries)
+
+## Assumptions
+
+## Definitions
+
 
 ## The Basics
 
@@ -142,7 +147,7 @@ type User {
 
 Use GraphQL descriptions everywhere: types, fields, arguments, etc.
 
-Do not make client developers guess the meaning or functionality of the schema; tell them.
+Do not make front-end developers guess the meaning or functionality of the schema; tell them.
 
 ### Custom Scalars
 
@@ -269,7 +274,7 @@ Circumstances change. What one day is assumed to always be the case may prove to
 <!-- omit in toc -->
 #### Output
 
-Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, at some point in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for client developers but provides long-term flexibility.
+Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, at some point in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for front-end developers but provides long-term flexibility.
 
 <!-- omit in toc -->
 #### Input
@@ -476,7 +481,7 @@ Now, `Query.node` code return a `Project` and any other field that returns `Node
 
 ### Deprecation
 
-Deprecate fields aggressively. Existing clients continue to function. Do not be afraid to deprecate fields, just make sure deprecation reasons point client developers to the new field(s), if any, that they should use.
+Deprecate fields aggressively. Existing clients continue to function. Do not be afraid to deprecate fields, just make sure deprecation reasons point front-end developers to the new field(s), if any, that they should use.
 
 Have a policy about removing deprecated fields. For example, monitor queries in production and remove deprecated fields once they have not been queried in 30 days.
 
@@ -484,7 +489,7 @@ Have a policy about removing deprecated fields. For example, monitor queries in 
 
 ### Deprecation
 
-Clients should prioritize removing queries that rely on deprecated fields as quickly as possible. The more responsive client developers are the faster server developers can be to evolve the schema to service the needs of the client.
+Clients should prioritize removing queries that rely on deprecated fields as quickly as possible. The more responsive front-end developers are the faster back-end developers can be to evolve the schema to service the needs of the client.
 
 ### Ecosystem
 
@@ -498,7 +503,7 @@ All client-side GraphQL should be static. Do not create dynamic queries by conca
 
 ### Schema Type System
 
-Correctly handle the types that the schema exposes. In GraphQL, a breaking schema change is considered to be any change that causes a query that previously succeeded to fail. If the client developers ignore the schema type system it prevents the server developers from making changes that should be non-breaking.
+Correctly handle the types that the schema exposes. In GraphQL, a breaking schema change is considered to be any change that causes a query that previously succeeded to fail. If the front-end developers ignore the schema type system it prevents the back-end developers from making changes that should be non-breaking.
 
 There are two common ways in which the schema can, but should now, be ignored or misused.
 
