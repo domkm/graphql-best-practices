@@ -48,7 +48,7 @@ This guide assumes knowledge of the GraphQL spec. This document is about the art
 
 ## The Basics
 
-Since we're using HTTP, there are multiple ways for the client to send information to the server. We could use headers, URLs, and POST bodies.
+Since we are using HTTP, there are multiple ways for the client to send information to the server. We could use headers, URLs, and POST bodies.
 
 ### JSON
 
@@ -104,7 +104,7 @@ Authentication can be done via mutations (like `authenticateUser`) or externally
 
 #### Cases
 
-- Type names should `PascalCase`
+- Type names should be `PascalCase`
 - Field and argument names should be `camelCase`
 - Enum values should be `SCREAMING_SNAKE_CASE`.
 
@@ -266,7 +266,7 @@ Bias toward nullable output fields. Never make promises to clients that you cann
 
 #### Input
 
-Bias toward __non__-nullable input fields and arguments. A non-nullable field which was technically optionally can become required without breaking clients. However, a nullable field cannot become non-nullable without breaking clients. Try to have every input field and argument be non-nullable.
+Bias toward __non__-nullable input fields and arguments. A non-nullable field which was technically optional can become required without breaking clients. However, a nullable field cannot become non-nullable without breaking clients. Try to have every input field and argument be non-nullable.
 
 ### Client-Driven
 
