@@ -394,7 +394,7 @@ GraphQL does not specify how to handle files.
 
 #### Download
 
-The easy side of files first -- downloads.
+The easy side of files first: downloads.
 
 Return signed URLs that expire after a reasonable period.
 These URLs should be wrapped in an object that provides additional metadata, like this:
