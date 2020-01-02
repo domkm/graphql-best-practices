@@ -258,11 +258,11 @@ Fields are essentially named-parameter functions. Even though they can take any 
 
 ### Field Nullability
 
-Circumstances change. What one day is assumed to always be the case may prove to not be.
+Circumstances change. What is true today may not be in the future. Considering this, it is important to understand how nullability affects schema evolution.
 
 #### Output
 
-Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be null then you close yourself to the possibility that it might, in the future, be null. Prefer nullable fields so that clients are written to handle nulls with good defaults. This is slightly more work upfront for front-end developers but provides long-term flexibility.
+Bias toward nullable output fields. Never make promises to clients that you cannot keep. If you tell them that something will never be `null` then you close yourself to the possibility that it might, in the future, be `null`. Prefer nullable fields so that clients are written to handle `null`s with good defaults. This is slightly more work upfront for front-end developers but provides long-term flexibility.
 
 #### Input
 
@@ -280,7 +280,7 @@ type User {
   dateOfBirth: ISO8601DateTime
 }
 ```
-- We provide the client with `fullName`, instead of just `givenName` and `surname`. There is no advantage to the UI concatenating strings, especially when it is complicated by nullable names and potentially multiple languages, some of which have surnames are last names and some of which have surnames are first names. We can provide `givenName` and `surname` fields, but we should also provide the info that clients require instead of making clients jump through hoops to render correctly.
+- We provide the client with `fullName`, instead of just `givenName` and `surname`. There is no advantage to the UI concatenating strings, especially when it is complicated by nullable names and potentially multiple languages, some of which have surnames are last names and some of which have surnames are first names. This is even more useful when multiple clients, built from different codebases, need to show the same data. We can provide `givenName` and `surname` fields, but we should also provide the info that clients require instead of making clients jump through hoops to render correctly.
 - Even though we are displaying the user's age in milliseconds, we don't expose this field directly. This is because, unlike `fullName`, `ageInMilliseconds` changes constantly. This is a case where the complexity of calculating the age must be done on the client. Calculating the age on the server would cause the UX to suffer.
 
 ### Redundant Fields
@@ -298,7 +298,7 @@ Mutations are the most difficult part of GraphQL schema design.
 This is the key concept. Mutations should be small and generally directly linked to an action the user is taking.
 
 - No: `updateUser(userInput)`, `userUpdate(userInput)`
-- Yes: `setUserEmail(emailInput)`, `casUserEmail(currentAndNewEmailInput)`
+- Yes: `setUserEmail(emailInput)`, `compareAndSwapUserEmail(currentAndNewEmailInput)`
 
 #### Input
 
@@ -312,16 +312,16 @@ type Mutation {
 
 Mutation input should be specific. The schema should be used to make it impossible to submit obviously incorrect data.
 
-```graphl
+```graphql
 input RegisterUserInput {
   email: String!
   password: String!
 }
 ```
 
-But then imagine that it is decided that users should also be able to register with a phone number instead of an email address. The naive approach would be to make `email` optional and add an optional `phone` field:
+But then imagine that it is decided that users should also be able to register with a phone number instead of an email address. The intuitive approach might be to make `email` optional and add an optional `phone` field:
 
-```graphl
+```graphql
 input RegisterUserInput {
   email: String
   phone: String
@@ -372,14 +372,21 @@ All mutation payloads should implement the following interface:
 
 ```graphql
 interface MutationPayload {
-  query: Query!
-  # result: MutationResult
+  query: Query! # the root query object
+  # mutation payloads should also return a `result` object
 }
 ```
 
-Mutation payloads should always return the root query object so that clients can query from the root, regardless of what the mutation response is otherwise. This can be useful for a variety of reasons, but the primary reason is that full-featured clients like Relay and Apollo need to incorporate the mutation changes into the state but do not know how to by default because the effects of the mutation are not known ahead of time. Clients can use the Query root to query for changed data which should replace stale local data.
+Mutation payloads should always return the root query object so that clients can query from the root, regardless of what the mutation response is otherwise. This can be useful for a variety of reasons, but the primary reason is that stateful clients like Relay and Apollo need to incorporate the mutation changes into the state but do not know how to by default because the effects of the mutation are not known ahead of time. Clients can use the query root to query for changed data which should replace stale local data.
 
-Additionally, Mutation payloads should return a `result` union. Please read [this article about result unions](https://medium.com/@sachee/200-ok-error-handling-in-graphql-7ec869aec9bc). Unfortunately, GraphQL's type system cannot express that `MutationPayload` must have a field called `result` and the value must be non-scalar, so we will leave that commented out.
+Additionally, Mutation payloads should return a `result` union. Please read [this article about result unions](https://medium.com/@sachee/200-ok-error-handling-in-graphql-7ec869aec9bc). Unfortunately, GraphQL's type system cannot express that `MutationPayload` must have a field called `result` and the value must be non-scalar. If GraphQL's type system could express this interface, it might look like this:
+
+```graphql
+interface MutationPayload {
+  query: Query!
+  result: Object! # impossible to express currently
+}
+```
 
 ### Files
 
@@ -415,13 +422,13 @@ There seem to be three general strategies for handling file uploads. At the time
    3. Run a mutation like `attachImageToPost(postId, uploadedAssetId)`
 3. __GraphQL Multipart Request Spec__ - [This](https://github.com/jaydenseric/graphql-multipart-request-spec) is an emerging standard for using GraphQL with `multipart/form-data` content type (instead of the usual `application/json`) and therefore able to transmit files directly. This ships with Apollo Server and some other libraries and tools.
 
-In the spirit of being client-driven, the GraphQL Multipart Request Spec seems like the best approach, currently. It is not a panacea though; it causes new problems like requiring the client to route multipart requests over HTTP even if a WebSocket connection exists and places additional strain on the API server.
+ The GraphQL Multipart Request Spec method causes new problems like requiring the client to route multipart requests over HTTP even if a WebSocket connection exists and places additional strain on the API server. However, it seems to be the most "client-driven" method and solves multiple problems with other methods. All things considered, it seems like the Multipart Request Spec is the best approach, currently.
 
 ## Server
 
 ### Schema Creation
 
-SDL (the GraphQL **S**chema **D**efinition **L**anguage) is used throughout this document. It is very useful for describing a schema but too static for easily defining a schema. Do not use SDL or any type of static data (like EDN) for schema definition. Instead, use code to generate the schema (or generate the data which is then used to generate the schema). Good GraphQL schemas tend to be extremely verbose; do not try to define them by hand. See [this article](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3) for a more thorough explanation.
+SDL (the GraphQL **S**chema **D**efinition **L**anguage) is used throughout this document. It is very useful for describing a schema but too limited for easily defining a schema. Do not use SDL or any type of static data (like EDN) for schema definition. Instead, use code to generate the schema (or generate the data which is then used to generate the schema). Good GraphQL schemas tend to be extremely verbose; do not try to define them by hand. See [this article](https://www.prisma.io/blog/the-problems-of-schema-first-graphql-development-x1mn4cb0tyl3) for a more thorough explanation.
 
 ### Authorization
 
@@ -548,7 +555,9 @@ This example uses enum values but the same concept applies to interface and unio
 
 ### Local State Management
 
-For non-transient local state, apply local extensions to the schema via the chosen client library. For more information, see [Relay](https://relay.dev/docs/en/local-state-management) or [Apollo](https://www.apollographql.com/docs/react/data/local-state/) documentation.
+For non-component state, apply local extensions to the schema via the chosen client library. This enables the use of GraphQL for reading and writing virtually all local data, like routing, authentication, network connectivity, etc.
+
+For more information, see [Relay](https://relay.dev/docs/en/local-state-management) or [Apollo](https://www.apollographql.com/docs/react/data/local-state/) documentation.
 
 
 ## Optimization
